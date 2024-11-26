@@ -3,19 +3,13 @@ package eth
 import (
 	"context"
 	"fmt"
+	"github.com/defiweb/go-eth/abi"
 	//"github.com/defiweb/go-eth/crypto"
 	"github.com/defiweb/go-eth/types"
-	"log"
 	"math/big"
 
-	//"github.com/defiweb/go-eth/abi"
 	"github.com/defiweb/go-eth/rpc"
 	"github.com/defiweb/go-eth/rpc/transport"
-	//"github.com/defiweb/go-eth/txmodifier"
-	//"github.com/defiweb/go-eth/types"
-	//"github.com/defiweb/go-eth/wallet"
-	//"log"
-	"github.com/ethereum/go-ethereum/crypto"
 )
 
 func Connect(ctx context.Context, endpoint string) error {
@@ -73,8 +67,21 @@ func Connect(ctx context.Context, endpoint string) error {
 
 }
 
-func Mint(ctx context.Context, endpoint, pk string) error {
-	privateKey, err := crypto.HexToECDSA(pk) if err != nil { log.Fatalf("Failed to load private key: %v", err)
+//const (
+//	contractPath = "envs/ethereum-network/artifacts/contracts/DoorControl.sol/DoorControl.json"
+//)
+
+func Mint(ctx context.Context, endpoint, contractPath, pk string) error {
+	_, _ = abi.LoadJSON(contractPath)
+	contract, err := abi.LoadJSON(contractPath)
+	if err != nil {
+		err = fmt.Errorf("load contract: %w", err)
+		return err
+	}
+
+	fmt.Printf("Minting contract at %+v\n", contract)
+	fmt.Printf("Minting contract at %+v\n", contract.Methods)
+	fmt.Printf("Minting contract at %+v\n", contract.Constructor)
 
 	return nil
 }

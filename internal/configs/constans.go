@@ -9,3 +9,7 @@ const (
 func GetNetworkEndpoint() string {
 	return viper.GetString("eth.network.endpoint")
 }
+
+func GetPrivateKey() string {
+	return viper.GetString("eth.network.private_key")
+}

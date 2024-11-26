@@ -1,5 +1,7 @@
 
 require("@nomiclabs/hardhat-waffle");// This is a sample Hardhat task. To learn how to create your own go to
+require("@solarity/hardhat-gobind");
+
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners(); for (const account of accounts) {
@@ -11,7 +13,21 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.27",
+  solidity: "0.8.28",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 1000,
+    },
+  },
+  gobind: {
+    outdir: "../../internal",
+    deployable: true,
+    runOnCompile: true,
+    verbose: false,
+    onlyFiles: ["contracts"],
+    skipFiles: ["contracts/interfaces", "@openzeppelin", "@solarity"],
+  },
   networks: {
     hardhat: {
       chainId: 1337,
