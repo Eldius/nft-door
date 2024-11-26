@@ -3,7 +3,8 @@ package eth
 import (
 	"context"
 	"fmt"
-	"github.com/defiweb/go-eth/abi"
+	"github.com/eldius/nft-pocs/internal/contracts/doorcontrol"
+
 	//"github.com/defiweb/go-eth/crypto"
 	"github.com/defiweb/go-eth/types"
 	"math/big"
@@ -72,16 +73,27 @@ func Connect(ctx context.Context, endpoint string) error {
 //)
 
 func Mint(ctx context.Context, endpoint, contractPath, pk string) error {
-	_, _ = abi.LoadJSON(contractPath)
-	contract, err := abi.LoadJSON(contractPath)
+	contract, err := doorcontrol.DoorControlMetaData.GetAbi()
 	if err != nil {
-		err = fmt.Errorf("load contract: %w", err)
+		err = fmt.Errorf("get abi: %w", err)
 		return err
 	}
-
-	fmt.Printf("Minting contract at %+v\n", contract)
 	fmt.Printf("Minting contract at %+v\n", contract.Methods)
+	fmt.Printf("Minting contract at %+v\n", contract)
 	fmt.Printf("Minting contract at %+v\n", contract.Constructor)
+
+	//t, err := transport.NewHTTP(transport.HTTPOptions{URL: endpoint})
+	//if err != nil {
+	//	err = fmt.Errorf("create http transport: %w", err)
+	//	return err
+	//}
+
+	//// Create a JSON-RPC client.
+	//c, err := rpc.NewClient(rpc.WithTransport(t))
+	//if err != nil {
+	//	err = fmt.Errorf("create rpc client: %w", err)
+	//	return err
+	//}
 
 	return nil
 }

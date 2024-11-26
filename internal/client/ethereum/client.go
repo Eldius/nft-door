@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func Mint(ctx context.Context, endpoint, pk string) error {
+func Mint(ctx context.Context, endpoint, pk, image string) error {
 	fmt.Println("connecting to:", endpoint)
 	cl, err := ethclient.Dial(endpoint)
 	if err != nil {
@@ -56,6 +56,36 @@ func Mint(ctx context.Context, endpoint, pk string) error {
 		return err
 	}
 	fmt.Println("Pending name:", name)
+
+	dc, err := doorcontrol.NewDoorControl(address, cl)
+	if err != nil {
+		err = fmt.Errorf("failed to connect to eth client: %v", err)
+		return err
+	}
+
+	fmt.Printf("Contract pending deploy: 0x%x\n\n", tx.Hash())
+	fmt.Printf("dc: %+v\n", dc)
+
+	session := &doorcontrol.DoorControlSession{
+		Contract: dc,
+		CallOpts: bind.CallOpts{
+			Pending: true,
+		},
+		TransactOpts: bind.TransactOpts{
+			From:     auth.From,
+			Signer:   auth.Signer,
+			GasLimit: uint64(3141592),
+		},
+	}
+
+	// Call the previous methods without the option parameters
+	tx1, err := session.SafeMint(address, image)
+	if err != nil {
+		err = fmt.Errorf("failed to connect to eth client: %v", err)
+		return err
+	}
+
+	fmt.Println("SafeMint tx1:", tx1)
 
 	return nil
 }

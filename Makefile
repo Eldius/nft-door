@@ -27,4 +27,4 @@ eth-nft:
     	nft --contract-path $(PWD)/envs/ethereum-network/artifacts/contracts/DoorControl.sol/DoorControl.json
 
 run:
-	go run ./cmd/cli run
+	go run ./cmd/cli run -i resources/sample.png
