@@ -11,7 +11,11 @@ import (
 	"time"
 )
 
-func Mint(ctx context.Context, endpoint, pk, image string) error {
+func DeployContract(ctx context.Context, endpoint, pk, link string) error {
+	return nil
+}
+
+func Mint(ctx context.Context, endpoint, pk, link string) error {
 	fmt.Println("connecting to:", endpoint)
 	cl, err := ethclient.Dial(endpoint)
 	if err != nil {
@@ -47,7 +51,22 @@ func Mint(ctx context.Context, endpoint, pk, image string) error {
 	fmt.Printf("Contract pending deploy: 0x%x\n", address)
 	fmt.Printf("Transaction waiting to be mined: 0x%x\n\n", tx.Hash())
 
+	fmt.Printf("Tx to address: %+v\n\n", tx.To())
+	fmt.Printf("Tx: %+v\n\n", tx)
+	fmt.Printf("Tx access list: %+v\n\n", tx.AccessList())
+	fmt.Printf("Address: %s\n\n", address.String())
 	time.Sleep(250 * time.Millisecond) // Allow it to be processed by the local node :P
+
+	owner, err := instance.Owner(&bind.CallOpts{
+		Pending: true,
+		Context: ctx,
+	})
+	if err != nil {
+		err = fmt.Errorf("failed to connect to eth client: %v", err)
+		return err
+	}
+
+	fmt.Printf("Owner: %s\n", owner.Hex())
 
 	// function call on `instance`. Retrieves pending name
 	name, err := instance.Name(&bind.CallOpts{Pending: true})
@@ -70,6 +89,7 @@ func Mint(ctx context.Context, endpoint, pk, image string) error {
 		Contract: dc,
 		CallOpts: bind.CallOpts{
 			Pending: true,
+			Context: ctx,
 		},
 		TransactOpts: bind.TransactOpts{
 			From:     auth.From,
@@ -79,7 +99,7 @@ func Mint(ctx context.Context, endpoint, pk, image string) error {
 	}
 
 	// Call the previous methods without the option parameters
-	tx1, err := session.SafeMint(address, image)
+	tx1, err := session.SafeMint(address, link)
 	if err != nil {
 		err = fmt.Errorf("failed to connect to eth client: %v", err)
 		return err
